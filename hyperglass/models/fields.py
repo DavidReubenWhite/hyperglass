@@ -9,7 +9,7 @@ from pydantic import StrictInt, StrictFloat, constr
 
 IntFloat = TypeVar("IntFloat", StrictInt, StrictFloat)
 
-SupportedDriver = constr(regex=r"(scrapli|netmiko|hyperglass_agent)")
+SupportedDriver = constr(regex=r"(scrapli|netmiko|pyez|hyperglass_agent)")
 
 
 class StrictBytes(bytes):

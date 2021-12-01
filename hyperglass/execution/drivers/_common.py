@@ -37,10 +37,8 @@ class Connection:
 
         structured_nos = structured_parsers.keys()
         structured_query_types = structured_parsers.get(self.device.nos, {}).keys()
-
         scrape_nos = scrape_parsers.keys()
         scrape_query_types = scrape_parsers.get(self.device.nos, {}).keys()
-
         if not self.device.structured_output:
             _parsed = ()
             for func in parsers:

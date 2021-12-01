@@ -64,6 +64,8 @@ FUNC_COLOR_MAP = {
 
 TRANSPORT_REST = ("frr_legacy", "bird_legacy")
 
+TRANSPORT_RPC = ("junos", "juniper", "junos_juniper")
+
 SCRAPE_HELPERS = {
     "arista": "arista_eos",
     "ios": "cisco_ios",
@@ -81,9 +83,30 @@ DRIVER_MAP = {
     "cisco_xe": "scrapli",
     "cisco_xr": "scrapli",
     "cisco_nxos": "scrapli",
-    "juniper": "scrapli",
+    "juniper": "pyez",
     "tnsr": "scrapli",
     "frr": "scrapli",
     "frr_legacy": "hyperglass_agent",
     "bird_legacy": "hyperglass_agent",
+}
+
+RPC_VARIABLE_MAP = {
+    "traceroute": {
+        "vrf": "routing_instance",
+        "target": "host",
+        "source": "source"
+    },
+    "bgp_route": {
+        "vrf": "table",
+        "target": "destination"
+    },
+    "ping": {
+        "vrf": "routing_instance",
+        "target": "host",
+        "source": "source"
+    },
+    "bgp_aspath": {
+        "vrf": "table",
+        "target": "aspath-regex",
+    },
 }

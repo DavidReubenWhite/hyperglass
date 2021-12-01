@@ -17,7 +17,7 @@ from hyperglass.models.api import Query
 from hyperglass.configuration import params
 
 # Local
-from .drivers import Connection, AgentConnection, NetmikoConnection, ScrapliConnection
+from .drivers import Connection, AgentConnection, NetmikoConnection, ScrapliConnection, PyEZConnection
 
 
 def map_driver(driver_name: str) -> Connection:
@@ -28,6 +28,9 @@ def map_driver(driver_name: str) -> Connection:
 
     elif driver_name == "hyperglass_agent":
         return AgentConnection
+
+    elif driver_name == "pyez":
+        return PyEZConnection
 
     return NetmikoConnection
 

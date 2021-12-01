@@ -2,7 +2,7 @@
 
 # Local
 from .arista import parse_arista
-from .juniper import parse_juniper
+from .juniper import parse_juniper, parse_juniper_traceroute, parse_juniper_ping
 from .mikrotik import parse_mikrotik
 
 structured_parsers = {
@@ -10,6 +10,8 @@ structured_parsers = {
         "bgp_route": parse_juniper,
         "bgp_aspath": parse_juniper,
         "bgp_community": parse_juniper,
+        "traceroute": parse_juniper_traceroute,
+        "ping": parse_juniper_ping,
     },
     "arista_eos": {
         "bgp_route": parse_arista,

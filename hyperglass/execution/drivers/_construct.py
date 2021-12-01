@@ -12,7 +12,7 @@ from operator import attrgetter
 
 # Project
 from hyperglass.log import log
-from hyperglass.constants import TRANSPORT_REST, TARGET_FORMAT_SPACE
+from hyperglass.constants import TRANSPORT_REST, TRANSPORT_RPC, TARGET_FORMAT_SPACE, RPC_VARIABLE_MAP
 from hyperglass.configuration import commands
 
 
@@ -34,6 +34,8 @@ class Construct:
         self.transport = "scrape"
         if self.device.nos in TRANSPORT_REST:
             self.transport = "rest"
+        elif self.device.nos in TRANSPORT_RPC:
+            self.transport = "rpc"
 
         # Remove slashes from target for required platforms
         if self.device.nos in TARGET_FORMAT_SPACE:
@@ -79,6 +81,41 @@ class Construct:
             }
         )
 
+    def rpc(self, afi):
+        """Return dict for use in RPC devices."""
+        if self.device.structured_output:
+            cmd_paths = (
+                self.device.nos,
+                "structured",
+                afi.protocol,
+                self.query_data.query_type,
+            )
+        else:
+            cmd_paths = (self.device.commands, afi.protocol, self.query_data.query_type)
+        command = _json.loads(attrgetter(".".join(cmd_paths))(commands))
+        dynamic = {}
+        if command['rpc_name'] == 'get_route_information':
+            if 'ipv6' in afi.protocol:
+                family = 'inet6'
+            else:
+                family = 'inet'
+            table = '{}.{}.0'.format(self.query_data.query_vrf.name, family)
+        else:
+            table = self.query_data.query_vrf.name
+        for k, v in RPC_VARIABLE_MAP[self.query_data.query_type].items():
+            if k == 'vrf':
+                # dynamic.update({v: self.query_data.query_vrf.name})
+                dynamic.update({v: table})
+            elif k == 'target':
+                dynamic.update({v: str(self.target)})
+            elif k == 'source':
+                dynamic.update({v: str(afi.source_address)})
+
+        command['rpc_args'].update(dynamic)
+        log.debug(command)
+        # command['rpc_args'].update({'source': str(afi.source_address), 'host': str(self.target), 'routing-instance': self.query_data.query_vrf.name })
+        return command
+
     def scrape(self, afi):
         """Return formatted command for 'Scrape' endpoints (SSH)."""
         if self.device.structured_output:
@@ -90,8 +127,8 @@ class Construct:
             )
         else:
             cmd_paths = (self.device.commands, afi.protocol, self.query_data.query_type)
-
         command = attrgetter(".".join(cmd_paths))(commands)
+
         return command.format(
             target=self.target,
             source=str(afi.source_address),
@@ -105,6 +142,8 @@ class Construct:
         for afi in self.afis:
             if self.transport == "rest":
                 query.append(self.json(afi=afi))
+            elif self.transport == "rpc":
+                query.append(self.rpc(afi=afi))
             else:
                 query.append(self.scrape(afi=afi))
 

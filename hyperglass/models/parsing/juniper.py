@@ -88,6 +88,7 @@ class JuniperRouteTableEntry(_JuniperBase):
         )
         values["source-as"] = _path_attr_agg.get("aggr-as-number", 0)
         values["source-rid"] = _path_attr_agg.get("aggr-router-id", "")
+        log.debug(values)
         values["peer-rid"] = values["peer-id"]
 
         return values
