@@ -90,6 +90,19 @@ def convert(to, who, default=u''):
     except:  # noqa
         return default
 
+def flatten(results: dict) -> dict:
+    hosts = []
+    ips = []
+    for hop, probes in results['success'].items():
+        for _, v in probes.items():
+            for _, data in v.items():
+                ips.append(data.get('ip_address'))
+                hosts.append(data.get('host_name'))
+    return {'hosts': hosts, 'ips': ips}
+
+def find_data_len(input: list) -> int:
+    return len(max(input, key=len))
+
 def parse_juniper_ping(output: Sequence) -> str:
     ping_result = {'probes': {}}
 
@@ -154,8 +167,6 @@ def parse_juniper_ping(output: Sequence) -> str:
     return '\n'.join(output_header + output_lines + output_footer)
 
 def parse_juniper_traceroute(output: Sequence) -> str:
-
-
     traceroute_result = {}
     traceroute_result['success'] = {}
 
@@ -179,11 +190,16 @@ def parse_juniper_traceroute(output: Sequence) -> str:
                     'rtt': rtt
                 }
 
-    output_header = ["{:<7} {:<34} {:<19} {:<20}".format('Hop','Host', 'Address', 'Probes')]
+    flattened = flatten(traceroute_result)
+    host_column_width = find_data_len(flattened.get('hosts')) + 4
+    ip_column_width = find_data_len(flattened.get('ips')) + 4
+
+    # output_header = ["{:<7} {:<34} {:<19} {:<20}".format('Hop','Host', 'Address', 'Probes')]
+    output_header = ["{:<5} {:<{hw}} {:<{iw}} {:<20}".format('Hop','Host', 'Address', 'Probes', hw=host_column_width - 1, iw=ip_column_width - 1)]
     output_lines = []
     for hop, probes in traceroute_result['success'].items():
         output_line = ''
-        output_line += "{:<8}".format(hop)
+        output_line += "{:<6}".format(hop)
         hostname = ''
         address = ''
         print(hop)
@@ -200,8 +216,8 @@ def parse_juniper_traceroute(output: Sequence) -> str:
                     # this should only be a *
                     rtts.append('*'.ljust(10))
             rtt_string = '  '.join(rtts)
-            output_line += "{:<35}".format(hostname)
-            output_line += "{:<20}".format(address)
+            output_line += "{:<{hw}}".format(hostname, hw=host_column_width)
+            output_line += "{:<{iw}}".format(address, iw=ip_column_width)
             output_line += "{:<20}".format(rtt_string)
             output_lines.append(output_line)
     return '\n'.join(output_header + output_lines)
