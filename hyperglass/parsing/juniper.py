@@ -156,9 +156,12 @@ def parse_juniper_ping(output: Sequence) -> str:
     output_lines = []
 
     for _, probe in ping_result['probes'].items():
-        output_line = "{} bytes from {}: icmp_seq={} ttl={} time={:.1f} ms".format(
-            probe['response_size'], probe['address'], probe['sequence_no'], probe['ttl'], probe['rtt']
-        )
+        if probe['rtt'] == 0.0:
+            output_line = "Request timeout for icmp_seq {}".format(probe['sequence_no'])
+        else:
+            output_line = "{} bytes from {}: icmp_seq={} ttl={} time={:.1f} ms".format(
+                probe['response_size'], probe['address'], probe['sequence_no'], probe['ttl'], probe['rtt']
+            )
         output_lines.append(output_line)
 
     output_footer = ["--- {} ping statistics ---\n{} packets transmitted, {} received, {}% packet loss\nrtt min/avg/max/mdev = {:.3f}/{:.3f}/{:.3f}/{:.3f} ms".format(

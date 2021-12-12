@@ -50,32 +50,34 @@ class _VPNIPv6(CommandSet):
 
 _structured = CommandGroup(
     ipv4_default=CommandSet(
-        bgp_route="show route protocol bgp table inet.0 {target} best detail | display xml",
-        bgp_aspath='show route protocol bgp table inet.0 aspath-regex "{target}" detail | display xml',
+        bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet.0', 'destination': None, 'best': True, 'detail': True}}),
+        bgp_aspath=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet.0', 'aspath-regex': None, 'detail': True}}),
         bgp_community="show route protocol bgp table inet.0 community {target} detail | display xml",
         ping="ping inet {target} count 5 source {source}",
+        ping=json.dumps({'rpc_name': 'ping', 'rpc_args': {'inet': True, 'count': '5', 'source': None, 'host': None}}),
         traceroute="traceroute inet {target} wait 1 source {source}",
     ),
     ipv6_default=CommandSet(
-        bgp_route="show route protocol bgp table inet6.0 {target} best detail | display xml",
-        bgp_aspath='show route protocol bgp table inet6.0 aspath-regex "{target}" detail | display xml',
+        bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet6.0', 'destination': None, 'best': True, 'detail': True}}),
+        bgp_aspath=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet6.0', 'aspath-regex': None, 'detail': True}}),
         bgp_community="show route protocol bgp table inet6.0 community {target} detail | display xml",
-        ping="ping inet6 {target} count 5 source {source}",
-        traceroute="traceroute inet6 {target} wait 2 source {source}",
+        ping=json.dumps({'rpc_name': 'ping', 'rpc_args': {'inet6': True, 'count': '5', 'source': None, 'host': None}}),
+        traceroute=json.dumps({'rpc_name': 'traceroute', 'rpc_args': {'wait': '2', 'inet6': True, 'dev_timeout': '90', 'ttl':'20', 'source': None, 'host': None}}),
+
     ),
     ipv4_vpn=CommandSet(
         bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'destination': None, 'best': True, 'detail': True}}),
         bgp_aspath=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'aspath-regex': None, 'detail': True}}),
-        bgp_community="show route protocol bgp table {vrf}.inet.0 community {target} detail | display xml",
+        bgp_community=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'community': None, 'detail': True}}),
         ping=json.dumps({'rpc_name': 'ping', 'rpc_args': {'inet': True, 'count': '5', 'source': None, 'routing_instance': None, 'host': None}}),
         traceroute=json.dumps({'rpc_name': 'traceroute', 'rpc_args': {'dev_timeout': '90', 'ttl':'20', 'wait':'1', 'source': None, 'routing_instance': None, 'host': None}}),
     ),
     ipv6_vpn=CommandSet(
         bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'destination': None, 'best': True, 'detail': True}}),
         bgp_aspath=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'aspath-regex': None, 'detail': True}}),
-        bgp_community="show route protocol bgp table {vrf}.inet6.0 community {target} detail | display xml",
+        bgp_community=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': None, 'community': None, 'detail': True}}),
         ping=json.dumps({'rpc_name': 'ping', 'rpc_args': {'inet6': True, 'count': '5', 'source': None, 'routing_instance': None, 'host': None}}),
-        traceroute=json.dumps({'rpc_name': 'traceroute', 'rpc_args': {'inet6': True, 'dev_timeout': '90', 'ttl':'20', 'source': None, 'routing_instance': None, 'host': None}}),
+        traceroute=json.dumps({'rpc_name': 'traceroute', 'rpc_args': {'wait': '2', 'inet6': True, 'dev_timeout': '90', 'ttl':'20', 'source': None, 'routing_instance': None, 'host': None}}),
     ),
 )
 

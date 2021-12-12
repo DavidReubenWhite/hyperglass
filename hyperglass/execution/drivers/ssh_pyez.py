@@ -30,7 +30,7 @@ class PyEZConnection(SSHConnection):
 
     async def collect(self, host: str = None, port: int = None) -> Iterable:
         """Connect directly to a device.
-        Directly connects to the router via Napalm library, returns the
+        Directly connects to the router via PyEZ library, returns the
         command output.
         """
         if host is not None:
@@ -63,8 +63,6 @@ class PyEZConnection(SSHConnection):
                 driver_kwargs[
                     "passwd"
                 ] = self.device.credential.password.get_secret_value()
-
-        # log.debug('driver args: {}'.format(driver_kwargs))
 
         responses = ()
 
