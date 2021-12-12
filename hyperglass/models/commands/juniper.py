@@ -53,9 +53,8 @@ _structured = CommandGroup(
         bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet.0', 'destination': None, 'best': True, 'detail': True}}),
         bgp_aspath=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet.0', 'aspath-regex': None, 'detail': True}}),
         bgp_community="show route protocol bgp table inet.0 community {target} detail | display xml",
-        ping="ping inet {target} count 5 source {source}",
         ping=json.dumps({'rpc_name': 'ping', 'rpc_args': {'inet': True, 'count': '5', 'source': None, 'host': None}}),
-        traceroute="traceroute inet {target} wait 1 source {source}",
+        traceroute=json.dumps({'rpc_name': 'traceroute', 'rpc_args': {'dev_timeout': '90', 'ttl':'20', 'wait':'1', 'source': None, 'host': None}}),
     ),
     ipv6_default=CommandSet(
         bgp_route=json.dumps({'rpc_name': 'get_route_information', 'rpc_args': {'dev_timeout': '90', 'protocol': 'bgp', 'table': 'inet6.0', 'destination': None, 'best': True, 'detail': True}}),
